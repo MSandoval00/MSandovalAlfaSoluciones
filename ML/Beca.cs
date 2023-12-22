@@ -10,6 +10,6 @@ namespace ML
     {
         public int IdBeca { get; set; }
         public string? Tipo { get; set; }
-        public List<object> Becas { get; set; }
+        public List<object>? Becas { get; set; }
     }
 }

@@ -9,24 +9,27 @@ namespace BL
 {
     public class AlumnoBeca
     {
-        public static ML.Result GetAll()
+        public static ML.Result GetAll(ML.AlumnoBeca alumnoBeca)
         {
             ML.Result result = new ML.Result();
             try
             {
                 using (DL.MsandovalAlfaSolucionesContext context = new DL.MsandovalAlfaSolucionesContext())
                 {
-                    var query = (from tablaAlumnoBeca in context.AlumnoBecas.DefaultIfEmpty()
-                                 join tablaAlumno in context.Alumnos on tablaAlumnoBeca.IdAlumno equals tablaAlumno.IdAlumno
-                                 join tablaBeca in context.Becas on tablaAlumnoBeca.IdBeca equals tablaBeca.IdBeca
+                    var query = (from tablaAlumno in context.Alumnos
+                                 join tablaAlumnoBeca in context.AlumnoBecas on tablaAlumno.IdAlumno equals tablaAlumnoBeca.IdAlumno into alumnoBecaJoin
+                                 from tablaAlumnoBeca in alumnoBecaJoin.DefaultIfEmpty()
+                                 join tablaBeca in context.Becas on tablaAlumnoBeca.IdBeca equals tablaBeca.IdBeca into becaJoin
+                                 from tablaBeca in becaJoin.DefaultIfEmpty()
+                                 where alumnoBeca.Beca.IdBeca==0 || tablaBeca.IdBeca==alumnoBeca.Beca.IdBeca
                                  select new
                                  {
                                      IdAlumno=tablaAlumno.IdAlumno,
                                      Nombre=tablaAlumno.Nombre,
                                      Genero=tablaAlumno.Genero,
                                      Email=tablaAlumno.Email,
-                                     IdAlumnoBeca=tablaAlumnoBeca.IdAlumnoBeca,
-                                     IdBeca=tablaBeca.IdBeca,
+                                     IdAlumnoBeca=tablaAlumnoBeca !=null ? tablaAlumnoBeca.IdAlumnoBeca:(int?)null,
+                                     IdBeca=tablaBeca !=null ? tablaBeca.IdBeca:(int?)null,
                                      Tipo=tablaBeca.Tipo,
                                  });
                     result.Objects = new List<object>();
@@ -44,10 +47,20 @@ namespace BL
                             alumnoBeca.Alumno.Genero = bool.Parse(row.Genero.ToString());
                             alumnoBeca.Alumno.Email=row.Email;
 
-                            alumnoBeca.IdAlumnoBeca = row.IdAlumnoBeca;
+                            if (row.IdAlumnoBeca==0 || row.IdBeca==0 || row.Tipo==null)
+                            {
+                                alumnoBeca.IdAlumnoBeca = 0;
+                                alumnoBeca.Beca.IdBeca = 0;
+                                alumnoBeca.Beca.Tipo = "No tiene beca asignada";
+                            }
+                            else
+                            {
+                                alumnoBeca.IdAlumnoBeca = int.Parse(row.IdAlumnoBeca.ToString());
+                                alumnoBeca.Beca.IdBeca = int.Parse(row.IdBeca.ToString());
+                                alumnoBeca.Beca.Tipo = row.Tipo;
+                            }
                             //Beca
-                            alumnoBeca.Beca.IdBeca = row.IdBeca;
-                            alumnoBeca.Beca.Tipo = row.Tipo;
+                            
                             result.Objects.Add(alumnoBeca);
                             result.Correct = true;
 
@@ -57,9 +70,33 @@ namespace BL
                     else
                     {
                         result.Correct = false;
-                        result.ErrorMessage = "No hay registros de becas de alumnos";
+                        result.ErrorMessage = "Ninguna";
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+        public static ML.Result Add(ML.AlumnoBeca alumnoBeca)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                using (DL.MsandovalAlfaSolucionesContext context = new DL.MsandovalAlfaSolucionesContext())
+                {
+                    DL.AlumnoBeca nuevaBeca = new DL.AlumnoBeca();
+
+                    nuevaBeca.IdAlumno = alumnoBeca.Alumno.IdAlumno;
+                    nuevaBeca.IdBeca = alumnoBeca.Beca.IdBeca;
+                    context.AlumnoBecas.Add(nuevaBeca);
+                    context.SaveChanges();
+                }
+                result.Correct=true;
             }
             catch (Exception ex)
             {

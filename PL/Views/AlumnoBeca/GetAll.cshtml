@@ -6,5 +6,74 @@
 }
 
 <div class="text-center">
-    <h2>Lista de Alumnos con becas</h2>
+    <h2>Lista de Alumnos con o sin becas</h2>
 </div>
+<div class="container"> 
+    <div class="row">
+        <label>Busca por beca</label>
+     @using (Html.BeginForm("GetAll", "AlumnoBeca", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="col-md-3">
+         @Html.HiddenFor(Model=>Model.Beca.IdBeca)
+         @Html.LabelFor(Model=>Model.Beca.Tipo)
+         @Html.DropDownListFor(model=>Model.Beca.IdBeca, new  SelectList(Model.Beca.Becas,"IdBeca","Tipo"),"Selecciona Tipo de beca",new{@class="form-control btn btn-primary dropdown-toggle"})
+               <br /><br /> <button class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+</svg></button>
+        </div>
+    }</div>
+</div>
+<hr />
+@if (Model.AlumnosBecas.Count > 0)
+{
+    <div class="container">
+        <div class="row">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Genero</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Beca Inscrita</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ML.AlumnoBeca alumnoBeca in Model.AlumnosBecas)
+                    {
+                        <tr class=text-center>
+                            <td>@alumnoBeca.Alumno.Nombre</td>
+                            @if (alumnoBeca.Alumno.Genero == true)
+                            {
+                                <td style="color:blue;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gender-male" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M9.5 2a.5.5 0 0 1 0-1h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V2.707L9.871 6.836a5 5 0 1 1-.707-.707L13.293 2zM6 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8" />
+                                    </svg>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="color:pink;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gender-female" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 5a5 5 0 1 1 5.5 4.975V12h2a.5.5 0 0 1 0 1h-2v2.5a.5.5 0 0 1-1 0V13h-2a.5.5 0 0 1 0-1h2V9.975A5 5 0 0 1 3 5" />
+                                    </svg>
+                                </td>
+                            }
+                            <td>@alumnoBeca.Alumno.Email</td>
+                            <td>@alumnoBeca.Beca.Tipo</td>
+
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        No hay registros por mostrar.
+    </div>
+}

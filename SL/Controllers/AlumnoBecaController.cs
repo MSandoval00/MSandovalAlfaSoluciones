@@ -21,5 +21,19 @@ namespace SL.Controllers
                 return NotFound();
             }
         }
+        [HttpPost]
+        [Route("")]
+        public IActionResult Add(ML.AlumnoBeca alumnoBeca)
+        {
+            ML.Result result = BL.AlumnoBeca.Add(alumnoBeca);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

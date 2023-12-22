@@ -3,6 +3,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    var IdAlumno = Context.Session.GetString("IdAlumno");
 }
 <link rel="stylesheet" href="~/css/Cards.css" />
 <div class="text-center">
@@ -14,17 +15,23 @@
     <div class="container">
         @foreach (ML.Beca beca in Model.Becas)
         {
-         <div class="card">
-            <div class="face face1">
-                <div class="content">
-                    <img src="https://www.gob.mx/cms/uploads/action_program/main_image/7930/post_becas-1461081842657.jpg">
-                    <h3>@beca.Tipo</h3>
+            <div class="card">
+                <div class="face face1">
+                    <div class="content">
+                        <img src="https://www.gob.mx/cms/uploads/action_program/main_image/7930/post_becas-1461081842657.jpg">
+                        <h3>@beca.Tipo</h3>
+                    </div>
                 </div>
-            </div>
-            <div class="face face2">
-                <div class="content">
-                    <p>Para registrar la beca presiona el botón de Agregar Becas</p>
-                    <a href="@Url.Action("AddBeca","Beca",new {IdBeca=beca.IdBeca})">Agregar Beca</a>
+                <div class="face face2">
+                    <div class="content">
+                        <p>Para registrar la beca presiona el botón de Agregar Beca</p>   
+                        @using (Html.BeginForm("AddBeca","AlumnoBeca",FormMethod.Post,new{enctype="multipart/form-data"}))
+                        {
+                            @Html.TextBoxFor(model=>beca.IdBeca,new {@class="form-control"})
+                            @Html.TextBoxFor(model=>IdAlumno,new {@class="form-control"})
+                        <button class="btn btn-primary">Agregar Beca</button>    
+                        }
+                        
                 </div>
             </div>
         </div>   
