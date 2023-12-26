@@ -27,8 +27,8 @@
                         <p>Para registrar la beca presiona el botón de Agregar Beca</p>   
                         @using (Html.BeginForm("AddBeca","AlumnoBeca",FormMethod.Post,new{enctype="multipart/form-data"}))
                         {
-                            @Html.TextBoxFor(model=>beca.IdBeca,new {@class="form-control"})
-                            @Html.TextBoxFor(model=>IdAlumno,new {@class="form-control"})
+                            @Html.TextBoxFor(model=>beca.IdBeca,new {@class="form-control",@hidden="hidden"})
+                            @Html.TextBoxFor(model=>IdAlumno,new {@class="form-control",@hidden="hidden"})
                         <button class="btn btn-primary">Agregar Beca</button>    
                         }
                         

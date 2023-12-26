@@ -9,7 +9,7 @@ namespace BL
 {
     public class AlumnoBeca
     {
-        public static ML.Result GetAll(ML.AlumnoBeca alumnoBeca)
+        public static ML.Result GetAll(ML.AlumnoBeca alumnobeca)
         {
             ML.Result result = new ML.Result();
             try
@@ -21,7 +21,7 @@ namespace BL
                                  from tablaAlumnoBeca in alumnoBecaJoin.DefaultIfEmpty()
                                  join tablaBeca in context.Becas on tablaAlumnoBeca.IdBeca equals tablaBeca.IdBeca into becaJoin
                                  from tablaBeca in becaJoin.DefaultIfEmpty()
-                                 where alumnoBeca.Beca.IdBeca==0 || tablaBeca.IdBeca==alumnoBeca.Beca.IdBeca
+                                 where alumnobeca.Beca.IdBeca==0 || tablaBeca.IdBeca==alumnobeca.Beca.IdBeca
                                  select new
                                  {
                                      IdAlumno=tablaAlumno.IdAlumno,
@@ -100,6 +100,30 @@ namespace BL
             }
             catch (Exception ex)
             {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+        public static ML.Result Delete(int IdAlumoBeca)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                using (DL.MsandovalAlfaSolucionesContext context = new DL.MsandovalAlfaSolucionesContext())
+                {
+                    var query = (from tablaAlumnoBeca in context.AlumnoBecas
+                                 where tablaAlumnoBeca.IdAlumnoBeca == IdAlumoBeca
+                                 select tablaAlumnoBeca).First();
+                    context.AlumnoBecas.Remove(query);
+                    context.SaveChanges();
+                    result.Correct = true;
+                }
+            }
+            catch (Exception ex)
+            {
+
                 result.Correct = false;
                 result.ErrorMessage = ex.Message;
                 result.Ex = ex;

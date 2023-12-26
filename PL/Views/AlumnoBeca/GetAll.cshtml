@@ -8,21 +8,22 @@
 <div class="text-center">
     <h2>Lista de Alumnos con o sin becas</h2>
 </div>
-<div class="container"> 
+<div class="container">
     <div class="row">
         <label>Busca por beca</label>
-     @using (Html.BeginForm("GetAll", "AlumnoBeca", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        <div class="col-md-3">
-         @Html.HiddenFor(Model=>Model.Beca.IdBeca)
-         @Html.LabelFor(Model=>Model.Beca.Tipo)
-         @Html.DropDownListFor(model=>Model.Beca.IdBeca, new  SelectList(Model.Beca.Becas,"IdBeca","Tipo"),"Selecciona Tipo de beca",new{@class="form-control btn btn-primary dropdown-toggle"})
-               <br /><br /> <button class="btn btn-success">
+        @using (Html.BeginForm("GetAll", "AlumnoBeca", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="col-md-3">
+                @Html.LabelFor(Model=>Model.Beca.IdBeca)
+                @Html.DropDownListFor(model=>Model.Beca.IdBeca, new  SelectList(Model.Beca.Becas,"IdBeca","Tipo"),"Selecciona Tipo de beca",new{@class="form-control btn btn-primary dropdown-toggle"})
+                <br /><br /> <button class="btn btn-success">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-</svg></button>
-        </div>
-    }</div>
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </button>
+            </div>
+        }
+    </div>
 </div>
 <hr />
 @if (Model.AlumnosBecas.Count > 0)
@@ -36,6 +37,7 @@
                         <th class="text-center">Genero</th>
                         <th class="text-center">Email</th>
                         <th class="text-center">Beca Inscrita</th>
+                        <th class="text-center">Eliminar Beca</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,6 +63,17 @@
                             }
                             <td>@alumnoBeca.Alumno.Email</td>
                             <td>@alumnoBeca.Beca.Tipo</td>
+                            <td>
+                                @if (alumnoBeca.Beca.IdBeca!=0)
+                                {
+                                  <a class="btn btn-danger" href="@Url.Action("Delete","AlumnoBeca",new{IdBeca=alumnoBeca.IdAlumnoBeca})">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                    </svg>
+                                </a>  
+                                }
+                                
+                            </td>
 
 
                         </tr>
